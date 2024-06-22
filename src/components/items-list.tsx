@@ -22,7 +22,7 @@ async function ItemsList({ page }: itemsListProps) {
   const populatedResults = await fetchAllPokemonDetails(results);
 
   const previousPath = page > 1 ? `/?page=${page - 1}` : "";
-  const nextPath = totalPages > LIMIT * page ? `/?page=${page + 1}` : "";
+  const nextPath = page < totalPages ? `/?page=${page + 1}` : "";
 
   return (
     <ul className="col-start-1 col-end-2 row-start-2 row-end-3 bg-white overflow-y-scroll relative custom-scrollbar">
