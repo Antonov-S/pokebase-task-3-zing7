@@ -34,7 +34,14 @@ export async function fetchPokemonDetails(url: string) {
     );
   }
 
-  return { pokeImage, pokeTypes };
+  let pokeAbilities: string[] = [];
+  if (data.abilities && data.abilities.length > 0) {
+    pokeAbilities = data.abilities.map(
+      (typeEntry: { ability: { name: string } }) => typeEntry.ability.name
+    );
+  }
+
+  return { pokeImage, pokeTypes, pokeAbilities };
 }
 
 export async function fetchAllPokemonDetails(
@@ -45,7 +52,8 @@ export async function fetchAllPokemonDetails(
     return {
       ...pokemon,
       pokeImage: details.pokeImage,
-      pokeTypes: details.pokeTypes
+      pokeTypes: details.pokeTypes,
+      pokeAbilities: details.pokeAbilities
     };
   });
 

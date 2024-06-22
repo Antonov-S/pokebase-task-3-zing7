@@ -82,4 +82,5 @@ export type PokemonShort = {
 export type PokemonDetails = PokemonShort & {
   pokeImage: string;
   pokeTypes: string[];
+  pokeAbilities: string[];
 };
