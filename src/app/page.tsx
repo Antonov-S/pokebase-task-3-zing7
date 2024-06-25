@@ -10,12 +10,22 @@ type homePageProps = {
 
 export default function Home({ searchParams }: homePageProps) {
   const page = searchParams.page || 1;
+  const query = searchParams.query
+    ? Array.isArray(searchParams.query)
+      ? searchParams.query[0]
+      : searchParams.query
+    : "";
+  const type = searchParams.type
+    ? Array.isArray(searchParams.type)
+      ? searchParams.type[0]
+      : searchParams.type
+    : "";
   return (
     <>
       <BackgroundHeading />
       <main className="relative z-10 container h-[636px] bg-bcenter rounded-lg overflow-hidden grid grid-cols-[8fr_3fr] grid-rows-[59px_1fr] shadow-sm mt-12">
         <Header />
-        <ItemsList page={+page} />
+        <ItemsList page={+page} query={query} type={type} />
         <Sidebar />
       </main>
       <Footer />

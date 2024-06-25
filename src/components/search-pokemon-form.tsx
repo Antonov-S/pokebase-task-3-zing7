@@ -17,7 +17,7 @@ function SearchPokemonForm() {
     params.set("page", "1");
     if (term) {
       params.set("query", term);
-      params.delete("type");
+      // params.delete("type");
     } else {
       params.delete("query");
     }

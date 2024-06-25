@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
-
 import { Button } from "./ui/button";
 
 type PaginationControlsProps = {
@@ -25,13 +24,15 @@ export default function PaginationControls({
         <div />
       )}
 
-      {nextPath && (
+      {nextPath ? (
         <Link href={nextPath}>
           <Button className="h-[35px] w-[110px] border-none rounded bg-brown3 text-white text-base cursor-pointer flex justify-center items-center transition-all duration-200 hover:bg-brown4 mt-4 mr-4">
             Next
             <ArrowRightIcon />
           </Button>
         </Link>
+      ) : (
+        <div />
       )}
     </section>
   );
