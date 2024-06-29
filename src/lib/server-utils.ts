@@ -160,3 +160,9 @@ export async function fetchWithQueryAndType(
 
   return { results, totalPages, totalCount };
 }
+
+export async function fetchPokemon(name: string) {
+  const response = await fetch(`${API_URL}/pokemon/${name}`);
+  const data = await response.json();
+  return data;
+}

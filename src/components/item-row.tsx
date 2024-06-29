@@ -11,7 +11,7 @@ function ItemRow({ pokemon }: ItemRowProps) {
   return (
     <li className="flex relative h-12 text-sm border-b border-black/10">
       <Link
-        href={`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`}
+        href={`/${pokemon.name}`}
         className="flex-1 h-full flex items-center justify-between px-7 cursor-pointer"
       >
         <div className="flex items-center space-x-3">
