@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+
 import "./globals.css";
 import { PokemonCountProvider } from "@/contexts/pokemon-count-context";
+import BackgroundHeading from "@/components/background-heading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +22,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} relative flex flex-col justify-center items-center h-screen bg-accent overflow-hidden`}
       >
+        <BackgroundHeading />
         <PokemonCountProvider>{children}</PokemonCountProvider>
       </body>
     </html>

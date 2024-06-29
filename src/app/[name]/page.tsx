@@ -13,7 +13,9 @@ export default async function Page({ params }: { params: { name: string } }) {
         <BackButton />
       </div>
       <div className="flex flex-col justify-center items-center">
-        <h1 className="text-4xl font-bold mb-6">{pokemon.name}</h1>
+        <h1 className="text-5xl font-bold mb-6">
+          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+        </h1>
         <div className="w-[300px] h-[300px] mb-8">
           <Image
             src={pokemon.sprites?.front_default}
@@ -46,9 +48,12 @@ export default async function Page({ params }: { params: { name: string } }) {
               </li>
             ))}
           </ul>
-          <p className="text-gray-800 mb-8">
-            Base experience: <span>{pokemon.base_experience}</span>
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-gray-800 font-bold">
+              Base experience: <span>{pokemon.base_experience}</span>
+            </p>
+            <p className="text-gray-800 font-bold">Weight: {pokemon.weight}</p>
+          </div>
           <table className="min-w-full bg-white my-12">
             <thead>
               <tr className="bg-bheader text-gray-800">
@@ -68,7 +73,7 @@ export default async function Page({ params }: { params: { name: string } }) {
           <table className="min-w-full bg-white my-12">
             <thead>
               <tr className="bg-bheader text-gray-800">
-                <th className="text-left py-2 px-4">Move</th>
+                <th className="text-left py-2 px-4">Moves</th>
               </tr>
             </thead>
             <tbody className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -97,7 +102,6 @@ export default async function Page({ params }: { params: { name: string } }) {
               ))}
             </tbody>
           </table>
-          <p className="text-gray-800 font-bold">weight: {pokemon.weight}</p>
         </section>
       </div>
       <div className="flex justify-end mt-16">

@@ -27,7 +27,6 @@ export default function Home({ searchParams }: homePageProps) {
 
   return (
     <PokemonCountProvider>
-      <BackgroundHeading />
       <main className="relative z-10 container h-[636px] bg-bcenter rounded-lg overflow-hidden grid grid-cols-[8fr_3fr] grid-rows-[59px_1fr] shadow-sm mt-12">
         <Header />
         <Suspense key={`${page}-${query}-${type}`} fallback={<Loading />}>

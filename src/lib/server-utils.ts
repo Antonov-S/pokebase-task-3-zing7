@@ -1,7 +1,7 @@
 // import "server-only";
 
 import { API_URL, DEFAULT_POKE_IMAGE, LIMIT } from "@/lib/constants";
-import { PokemonDetails, PokemonShort } from "@/types/pokemon-api";
+import { PokemonAPI, PokemonDetails, PokemonShort } from "@/types/pokemon-api";
 import { sleep } from "@/lib/utils";
 
 export const fetchAllPokemonCollection = async () => {
@@ -161,7 +161,7 @@ export async function fetchWithQueryAndType(
   return { results, totalPages, totalCount };
 }
 
-export async function fetchPokemon(name: string) {
+export async function fetchPokemon(name: string): Promise<PokemonAPI.Pokemon> {
   const response = await fetch(`${API_URL}/pokemon/${name}`);
   const data = await response.json();
   return data;
