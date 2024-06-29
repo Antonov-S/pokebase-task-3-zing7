@@ -1,7 +1,13 @@
+"use client";
+
+import { usePokemonCount } from "@/contexts/pokemon-count-context";
+
 function Counter() {
+  const { count } = usePokemonCount();
+
   return (
     <p className="mr-5 text-sm">
-      <b>4</b> Pokemons found
+      <b>{count}</b> Pokemons found
     </p>
   );
 }

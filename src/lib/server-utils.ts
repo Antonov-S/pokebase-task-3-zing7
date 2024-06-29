@@ -2,6 +2,7 @@
 
 import { API_URL, DEFAULT_POKE_IMAGE, LIMIT } from "@/lib/constants";
 import { PokemonDetails, PokemonShort } from "@/types/pokemon-api";
+import { sleep } from "@/lib/utils";
 
 export const fetchAllPokemonCollection = async () => {
   const response = await fetch(`${API_URL}/pokemon?limit=100000`);
@@ -9,7 +10,15 @@ export const fetchAllPokemonCollection = async () => {
   return data.results;
 };
 
-export async function fetchPokemonDataWithPagination(currentPage: number) {
+export async function fetchPokemonDataWithPagination(
+  currentPage: number
+): Promise<{
+  results: PokemonShort[];
+  totalPages: number;
+  totalCount: number;
+}> {
+  const allResults = await fetchAllPokemonCollection();
+  const totalCount = allResults.length;
   const offset = (currentPage - 1) * LIMIT;
 
   const response = await fetch(
@@ -17,8 +26,9 @@ export async function fetchPokemonDataWithPagination(currentPage: number) {
   );
   const data = await response.json();
   const totalPages = Math.ceil(data.count / LIMIT);
-  const results = data.results;
-  return { results, totalPages };
+  const results: PokemonShort[] = data.results;
+
+  return { results, totalPages, totalCount };
 }
 
 export async function fetchPokemonDetails(url: string) {
@@ -47,45 +57,45 @@ export async function fetchPokemonDetails(url: string) {
 export async function fetchAllPokemonsDetails(
   pokemonArray: PokemonShort[]
 ): Promise<PokemonDetails[]> {
-  const promises = pokemonArray.map(async pokemon => {
-    const details = await fetchPokemonDetails(pokemon.url);
-    return {
-      ...pokemon,
-      pokeImage: details.pokeImage,
-      pokeTypes: details.pokeTypes,
-      pokeAbilities: details.pokeAbilities
-    };
-  });
+  const promises = pokemonArray.map(pokemon =>
+    fetchPokemonDetails(pokemon.url)
+  );
+  const detailedDataArray = await Promise.all(promises);
 
-  const detailedPokemonArray = await Promise.all(promises);
+  const detailedPokemonArray = pokemonArray.map((pokemon, index) => ({
+    ...pokemon,
+    pokeImage: detailedDataArray[index].pokeImage,
+    pokeTypes: detailedDataArray[index].pokeTypes,
+    pokeAbilities: detailedDataArray[index].pokeAbilities
+  }));
+
   return detailedPokemonArray;
 }
 
 export async function fetchByType(
   type: string,
   currentPage: number
-): Promise<{ results: PokemonShort[]; totalPages: number }> {
+): Promise<{
+  results: PokemonShort[];
+  totalPages: number;
+  totalCount: number;
+}> {
   const response = await fetch(`${API_URL}/type/${type}`);
   const data = await response.json();
 
-  // Трансформиране на данните да съдържат само name и url
   const simplifiedPokemonList: PokemonShort[] = data.pokemon.map(
     (entry: { pokemon: { name: string; url: string } }) => ({
       name: entry.pokemon.name,
       url: entry.pokemon.url
     })
   );
+  const totalCount = simplifiedPokemonList.length;
 
-  // Изчисляване на офсета
   const offset = (currentPage - 1) * LIMIT;
-
-  // Връщане на записите според офсета и лимита
   const results = simplifiedPokemonList.slice(offset, offset + LIMIT);
-
-  // Изчисляване на общия брой страници
   const totalPages = Math.ceil(simplifiedPokemonList.length / LIMIT);
 
-  return { results, totalPages };
+  return { results, totalPages, totalCount };
 }
 
 export async function fetchPokemonPages(query: string) {
@@ -98,39 +108,41 @@ export async function fetchPokemonPages(query: string) {
 export async function fetchWithQuery(
   query: string,
   currentPage: number
-): Promise<{ results: PokemonShort[]; totalPages: number }> {
+): Promise<{
+  results: PokemonShort[];
+  totalPages: number;
+  totalCount: number;
+}> {
   const allResults = await fetchAllPokemonCollection();
-
-  // Филтриране на резултатите по query
   const filteredResults = allResults.filter((pokemon: PokemonShort) =>
     pokemon.name.toLowerCase().includes(query.toLowerCase())
   );
+  const totalCount = filteredResults.length;
 
-  // Изчисляване на офсета
   const offset = (currentPage - 1) * LIMIT;
-
-  // Връщане на записите според офсета и лимита
   const results = filteredResults.slice(offset, offset + LIMIT);
-
-  // Изчисляване на общия брой страници
   const totalPages = Math.ceil(filteredResults.length / LIMIT);
 
-  return { results, totalPages };
+  return { results, totalPages, totalCount };
 }
 
 export async function fetchWithQueryAndType(
   query: string,
   type: string,
   currentPage: number
-): Promise<{ results: PokemonShort[]; totalPages: number }> {
+): Promise<{
+  results: PokemonShort[];
+  totalPages: number;
+  totalCount: number;
+}> {
   const allResults = await fetchAllPokemonCollection();
 
-  // Филтриране на резултатите по query
   const filteredResults = allResults.filter((pokemon: PokemonShort) =>
     pokemon.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  // Получаване на подробности за всеки покемон и филтриране по тип
+  const totalCount = filteredResults.length;
+
   const detailedResults = await Promise.all(
     filteredResults.map(async (pokemon: PokemonShort) => {
       const details = await fetchPokemonDetails(pokemon.url);
@@ -142,14 +154,9 @@ export async function fetchWithQueryAndType(
     pokemon.types.includes(type)
   );
 
-  // Изчисляване на офсета
   const offset = (currentPage - 1) * LIMIT;
-
-  // Връщане на записите според офсета и лимита
   const results = finalResults.slice(offset, offset + LIMIT);
-
-  // Изчисляване на общия брой страници
   const totalPages = Math.ceil(finalResults.length / LIMIT);
 
-  return { results, totalPages };
+  return { results, totalPages, totalCount };
 }

@@ -1,16 +1,14 @@
-import EmptyView from "./empty-view";
-import {
-  fetchWithQuery,
-  fetchPokemonDataWithPagination,
-  fetchAllPokemonsDetails,
-  fetchByType,
-  fetchWithQueryAndType
-} from "@/lib/server-utils";
-import { PokemonShort, PokemonDetails } from "@/types/pokemon-api";
-import ItemRow from "./item-row";
-import { LIMIT } from "@/lib/constants";
-import PaginationControls from "./pagination-controls";
+"use client";
+
+import { useEffect, useState } from "react";
+
 import SortBy from "./sortBy";
+import EmptyView from "./empty-view";
+import PaginationControls from "./pagination-controls";
+import ItemRow from "./item-row";
+import { DataLoader } from "./data-loader";
+import { PokemonDetails } from "@/types/pokemon-api";
+import { usePokemonCount } from "@/contexts/pokemon-count-context";
 
 type ItemsListProps = {
   page: number;
@@ -18,66 +16,60 @@ type ItemsListProps = {
   type: string;
 };
 
-async function ItemsList({ page, query, type }: ItemsListProps) {
-  let results: PokemonShort[] = [];
-  let totalPages = 1;
+function ItemsList({ page, query, type }: ItemsListProps) {
+  const [data, setData] = useState<{
+    populatedResults: PokemonDetails[];
+    totalPages: number;
+    totalResults: number; // Добавяме новата стойност
+  } | null>(null);
 
-  // Използваме променлива за модифициране на стойността на type
-  const effectiveType = type === "default" ? "" : type;
+  const { setCount } = usePokemonCount();
 
-  // Fetch all data based on query and type
-  if (query && query.trim() !== "" && effectiveType.trim() !== "") {
-    const data = await fetchWithQueryAndType(query, effectiveType, page);
-    results = data.results;
-    totalPages = data.totalPages;
-  } else if (query && query.trim() !== "") {
-    const data = await fetchWithQuery(query, page);
-    results = data.results;
-    totalPages = data.totalPages;
-  } else if (effectiveType && effectiveType.trim() !== "") {
-    const data = await fetchByType(effectiveType, page);
-    results = data.results;
-    totalPages = data.totalPages;
-  } else {
-    const data = await fetchPokemonDataWithPagination(page);
-    results = data.results;
-    totalPages = data.totalPages;
+  useEffect(() => {
+    async function fetchData() {
+      const data = await DataLoader({ page, query, type });
+      setData(data);
+      setCount(data.totalResults); // Актуализираме контекста със стойността на общия брой резултати
+    }
+
+    fetchData();
+  }, [page, query, type, setCount]);
+
+  if (!data) {
+    return null;
   }
 
-  const populatedResults = await fetchAllPokemonsDetails(results);
+  const { populatedResults, totalPages } = data;
 
-  // Предишна страница, само ако page > 1
   const previousPath =
     page > 1
       ? `/?page=${page - 1}${query ? `&query=${query}` : ""}${
-          effectiveType ? `&type=${effectiveType}` : ""
+          type ? `&type=${type}` : ""
         }`
       : "";
 
-  // Следваща страница, само ако page < totalPages
   const nextPath =
     page < totalPages
       ? `/?page=${page + 1}${query ? `&query=${query}` : ""}${
-          effectiveType ? `&type=${effectiveType}` : ""
+          type ? `&type=${type}` : ""
         }`
       : "";
 
   return (
     <div className="col-start-1 col-end-2 row-start-2 row-end-3 bg-white overflow-y-scroll relative custom-scrollbar">
-      <SortBy />
+      <SortBy type={type} />
 
       {populatedResults.length === 0 ? (
         <EmptyView />
       ) : (
-        <>
-          <ul>
-            {populatedResults.map((pokemon: PokemonDetails, index: number) => (
-              <ItemRow key={index} pokemon={pokemon} />
-            ))}
-          </ul>
-          <PaginationControls previousPath={previousPath} nextPath={nextPath} />
-        </>
+        <ul>
+          {populatedResults.map((pokemon, index) => (
+            <ItemRow key={index} pokemon={pokemon} />
+          ))}
+        </ul>
       )}
+
+      <PaginationControls previousPath={previousPath} nextPath={nextPath} />
     </div>
   );
 }
