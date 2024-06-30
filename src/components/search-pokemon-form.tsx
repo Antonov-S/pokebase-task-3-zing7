@@ -43,7 +43,7 @@ function SearchPokemonForm() {
 
   return (
     <form onSubmit={handleSubmit} className="relative">
-      <h2 className="text-brown2 text-base font-medium">Search Pokemon</h2>
+      {/* <h2 className="text-brown2 text-base font-medium">Search Pokemon</h2> */}
       <div className="relative">
         <input
           value={searchTerm}

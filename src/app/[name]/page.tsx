@@ -2,10 +2,34 @@ import Image from "next/image";
 
 import { fetchPokemon } from "@/lib/server-utils";
 import BackButton from "@/components/ui/back-button";
-import { PokemonAPI } from "@/types/pokemon-api";
+import { DEFAULT_POKE_IMAGE } from "@/lib/constants";
+import {
+  Ability,
+  Form,
+  GameIndex,
+  HeldItem,
+  Move,
+  PokemonAPI,
+  Stat,
+  Type
+} from "@/types/pokemon-api";
 
 export default async function Page({ params }: { params: { name: string } }) {
-  const pokemon = (await fetchPokemon(params.name)) as PokemonAPI.Pokemon;
+  let pokemon: PokemonAPI.Pokemon | null = null;
+  try {
+    pokemon = await fetchPokemon(params.name);
+  } catch (error) {
+    console.log("Error in Pokemon Page:", error);
+  }
+
+  if (!pokemon) return null;
+
+  if (!pokemon.sprites?.front_default) {
+    pokemon.sprites.front_default = DEFAULT_POKE_IMAGE.src;
+  }
+  if (!pokemon.base_experience) {
+    pokemon.base_experience = 0;
+  }
 
   return (
     <section className="relative z-10 container h-[636px] bg-bcenter rounded-lg overflow-y-auto shadow-sm mt-12 p-6">
@@ -28,7 +52,7 @@ export default async function Page({ params }: { params: { name: string } }) {
         <section className="text-center">
           <h3 className="text-2xl font-bold mb-4">Abilities</h3>
           <ul className="py-4 flex flex-wrap justify-center gap-y-4 gap-x-12 mb-8">
-            {pokemon.abilities.map(a => (
+            {pokemon.abilities.map((a: Ability) => (
               <li
                 key={a.ability.name}
                 className="px-4 py-2 border border-gray-200 rounded-lg"
@@ -39,7 +63,7 @@ export default async function Page({ params }: { params: { name: string } }) {
           </ul>
           <h3 className="text-2xl font-bold pt-12 mb-4">Forms</h3>
           <ul className="py-4 flex flex-wrap justify-center gap-y-4 gap-x-12 mb-8">
-            {pokemon.forms.map(f => (
+            {pokemon.forms.map((f: Form) => (
               <li
                 key={f.name}
                 className="px-4 py-2 border border-gray-200 rounded-lg"
@@ -48,10 +72,28 @@ export default async function Page({ params }: { params: { name: string } }) {
               </li>
             ))}
           </ul>
+          <h3 className="text-2xl font-bold pt-12 mb-4">Held Items</h3>
+          <ul className="py-4 flex flex-wrap justify-center gap-y-4 gap-x-12 mb-8">
+            {pokemon.held_items && pokemon.held_items.length > 0 ? (
+              pokemon.held_items.map((item: HeldItem, index: number) => (
+                <li
+                  key={index}
+                  className="px-4 py-2 border border-gray-200 rounded-lg"
+                >
+                  {item.item.name}
+                </li>
+              ))
+            ) : (
+              <li className="px-4 py-2 border border-gray-200 rounded-lg">
+                NO
+              </li>
+            )}
+          </ul>
           <div className="flex items-center justify-between">
             <p className="text-gray-800 font-bold">
               Base experience: <span>{pokemon.base_experience}</span>
             </p>
+            <p className="text-gray-800 font-bold">Height: {pokemon.height}</p>
             <p className="text-gray-800 font-bold">Weight: {pokemon.weight}</p>
           </div>
           <table className="min-w-full bg-white my-12">
@@ -62,7 +104,7 @@ export default async function Page({ params }: { params: { name: string } }) {
               </tr>
             </thead>
             <tbody>
-              {pokemon.types.map(t => (
+              {pokemon.types.map((t: Type) => (
                 <tr key={t.type.name} className="border-b border-gray-200">
                   <td className="py-2 px-4 text-left">{t.type.name}</td>
                   <td className="py-2 px-4 text-right">{t.slot}</td>
@@ -77,7 +119,7 @@ export default async function Page({ params }: { params: { name: string } }) {
               </tr>
             </thead>
             <tbody className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {pokemon.moves.map(m => (
+              {pokemon.moves.map((m: Move) => (
                 <tr key={m.move.name} className="border-b border-gray-200">
                   <td className="py-2 px-4">{m.move.name}</td>
                 </tr>
@@ -93,11 +135,27 @@ export default async function Page({ params }: { params: { name: string } }) {
               </tr>
             </thead>
             <tbody>
-              {pokemon.stats.map(s => (
+              {pokemon.stats.map((s: Stat) => (
                 <tr key={s.stat.name} className="border-b border-gray-200">
                   <td className="py-2 px-4 text-left">{s.stat.name}</td>
                   <td className="py-2 px-4 text-center">{s.base_stat}</td>
                   <td className="py-2 px-4 text-right">{s.effort}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <table className="min-w-full bg-white my-12">
+            <thead>
+              <tr className="bg-bheader text-gray-800">
+                <th className="text-left py-2 px-4">Game Version</th>
+                <th className="text-right py-2 px-4">Index</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pokemon.game_indices.map((g: GameIndex) => (
+                <tr key={g.version.name} className="border-b border-gray-200">
+                  <td className="py-2 px-4 text-left">{g.version.name}</td>
+                  <td className="py-2 px-4 text-right">{g.game_index}</td>
                 </tr>
               ))}
             </tbody>

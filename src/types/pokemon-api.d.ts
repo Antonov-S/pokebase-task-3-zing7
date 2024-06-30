@@ -84,3 +84,63 @@ export type PokemonDetails = PokemonShort & {
   pokeTypes: string[];
   pokeAbilities: string[];
 };
+
+export type HeldItem = {
+  item: {
+    name: string;
+    url: string;
+  };
+  version_details: {
+    rarity: number;
+    version: {
+      name: string;
+      url: string;
+    };
+  }[];
+};
+
+export type Ability = {
+  ability: {
+    name: string;
+    url: string;
+  };
+  is_hidden: boolean;
+  slot: number;
+};
+
+export type Form = {
+  name: string;
+  url: string;
+};
+
+export type Type = {
+  slot: number;
+  type: {
+    name: string;
+    url: string;
+  };
+};
+
+export type Move = {
+  move: {
+    name: string;
+    url: string;
+  };
+};
+
+export type Stat = {
+  base_stat: number;
+  effort: number;
+  stat: {
+    name: string;
+    url: string;
+  };
+};
+
+export type GameIndex = {
+  game_index: number;
+  version: {
+    name: string;
+    url: string;
+  };
+};
