@@ -13,7 +13,15 @@ type DataLoaderProps = {
   type: string;
 };
 
-export async function DataLoader({ page, query, type }: DataLoaderProps) {
+export async function DataLoader({
+  page,
+  query,
+  type
+}: DataLoaderProps): Promise<{
+  populatedResults: PokemonDetails[];
+  totalPages: number;
+  totalResults: number;
+}> {
   let results: PokemonShort[] = [];
   let totalPages = 1;
   let totalCount = 0;

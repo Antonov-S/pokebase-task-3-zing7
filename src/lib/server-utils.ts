@@ -1,4 +1,4 @@
-// import "server-only";
+import "server-only";
 
 import { API_URL, DEFAULT_POKE_IMAGE, LIMIT } from "@/lib/constants";
 import { PokemonAPI, PokemonDetails, PokemonShort } from "@/types/pokemon-api";

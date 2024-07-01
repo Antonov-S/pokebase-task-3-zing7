@@ -6,7 +6,6 @@ import SortBy from "./sortBy";
 import EmptyView from "./empty-view";
 import PaginationControls from "./pagination-controls";
 import ItemRow from "./item-row";
-import { DataLoader } from "./data-loader";
 import { PokemonDetails } from "@/types/pokemon-api";
 import { usePokemonCount } from "@/contexts/pokemon-count-context";
 
@@ -14,32 +13,24 @@ type ItemsListProps = {
   page: number;
   query: string;
   type: string;
+  populatedResults: PokemonDetails[];
+  totalPages: number;
+  totalResults: number;
 };
 
-function ItemsList({ page, query, type }: ItemsListProps) {
-  const [data, setData] = useState<{
-    populatedResults: PokemonDetails[];
-    totalPages: number;
-    totalResults: number; // Добавяме новата стойност
-  } | null>(null);
-
+function ItemsList({
+  page,
+  query,
+  type,
+  populatedResults,
+  totalPages,
+  totalResults
+}: ItemsListProps) {
   const { setCount } = usePokemonCount();
 
   useEffect(() => {
-    async function fetchData() {
-      const data = await DataLoader({ page, query, type });
-      setData(data);
-      setCount(data.totalResults); // Актуализираме контекста със стойността на общия брой резултати
-    }
-
-    fetchData();
-  }, [page, query, type, setCount]);
-
-  if (!data) {
-    return null;
-  }
-
-  const { populatedResults, totalPages } = data;
+    setCount(totalResults);
+  }, [totalResults, setCount]);
 
   const previousPath =
     page > 1
