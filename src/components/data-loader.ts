@@ -22,39 +22,44 @@ export async function DataLoader({
   totalPages: number;
   totalResults: number;
 }> {
-  let results: PokemonShort[] = [];
-  let totalPages = 1;
-  let totalCount = 0;
+  try {
+    let results: PokemonShort[] = [];
+    let totalPages = 1;
+    let totalCount = 0;
 
-  const effectiveType = type === "default" ? "" : type;
+    const effectiveType = type === "default" ? "" : type;
 
-  if (query && query.trim() !== "" && effectiveType.trim() !== "") {
-    const data = await fetchWithQueryAndType(query, effectiveType, page);
-    results = data.results;
-    totalPages = data.totalPages;
-    totalCount = data.totalCount;
-  } else if (query && query.trim() !== "") {
-    const data = await fetchWithQuery(query, page);
-    results = data.results;
-    totalPages = data.totalPages;
-    totalCount = data.totalCount;
-  } else if (effectiveType && effectiveType.trim() !== "") {
-    const data = await fetchByType(effectiveType, page);
-    results = data.results;
-    totalPages = data.totalPages;
-    totalCount = data.totalCount;
-  } else {
-    const data = await fetchPokemonDataWithPagination(page);
-    results = data.results;
-    totalPages = data.totalPages;
-    totalCount = data.totalCount;
+    if (query && query.trim() !== "" && effectiveType.trim() !== "") {
+      const data = await fetchWithQueryAndType(query, effectiveType, page);
+      results = data.results;
+      totalPages = data.totalPages;
+      totalCount = data.totalCount;
+    } else if (query && query.trim() !== "") {
+      const data = await fetchWithQuery(query, page);
+      results = data.results;
+      totalPages = data.totalPages;
+      totalCount = data.totalCount;
+    } else if (effectiveType && effectiveType.trim() !== "") {
+      const data = await fetchByType(effectiveType, page);
+      results = data.results;
+      totalPages = data.totalPages;
+      totalCount = data.totalCount;
+    } else {
+      const data = await fetchPokemonDataWithPagination(page);
+      results = data.results;
+      totalPages = data.totalPages;
+      totalCount = data.totalCount;
+    }
+
+    const totalResults = totalCount;
+
+    const populatedResults: PokemonDetails[] = await fetchAllPokemonsDetails(
+      results
+    );
+
+    return { populatedResults, totalPages, totalResults };
+  } catch (error) {
+    console.error("Error in DataLoader:", error);
+    return { populatedResults: [], totalPages: 0, totalResults: 0 };
   }
-
-  const totalResults = totalCount;
-
-  const populatedResults: PokemonDetails[] = await fetchAllPokemonsDetails(
-    results
-  );
-
-  return { populatedResults, totalPages, totalResults };
 }

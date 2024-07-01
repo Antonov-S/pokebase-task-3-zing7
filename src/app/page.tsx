@@ -25,25 +25,40 @@ export default async function Home({ searchParams }: HomePageProps) {
       : searchParams.type
     : "";
 
-  const data = await DataLoader({ page, query, type });
+  try {
+    const data = await DataLoader({ page, query, type });
 
-  return (
-    <PokemonCountProvider>
-      <main className="relative z-10 container h-[636px] bg-bcenter rounded-lg overflow-hidden grid grid-cols-[8fr_3fr] grid-rows-[59px_1fr] shadow-sm mt-12">
-        <Header />
-        <Suspense key={`${page}-${query}-${type}`} fallback={<Loading />}>
-          <ItemsList
-            page={page}
-            query={query}
-            type={type}
-            populatedResults={data.populatedResults}
-            totalPages={data.totalPages}
-            totalResults={data.totalResults}
-          />
-        </Suspense>
-        <Sidebar />
-      </main>
-      <Footer />
-    </PokemonCountProvider>
-  );
+    return (
+      <PokemonCountProvider>
+        <main className="relative z-10 container h-[636px] bg-bcenter rounded-lg overflow-hidden grid grid-cols-[8fr_3fr] grid-rows-[59px_1fr] shadow-sm mt-12">
+          <Header />
+          <Suspense key={`${page}-${query}-${type}`} fallback={<Loading />}>
+            <ItemsList
+              page={page}
+              query={query}
+              type={type}
+              populatedResults={data.populatedResults}
+              totalPages={data.totalPages}
+              totalResults={data.totalResults}
+            />
+          </Suspense>
+          <Sidebar />
+        </main>
+        <Footer />
+      </PokemonCountProvider>
+    );
+  } catch (error) {
+    console.error("Error in Home:", error);
+
+    return (
+      <PokemonCountProvider>
+        <main className="relative z-10 container h-[636px] bg-bcenter rounded-lg overflow-hidden grid grid-cols-[8fr_3fr] grid-rows-[59px_1fr] shadow-sm mt-12">
+          <Header />
+          <div>Error loading data</div>
+          <Sidebar />
+        </main>
+        <Footer />
+      </PokemonCountProvider>
+    );
+  }
 }
