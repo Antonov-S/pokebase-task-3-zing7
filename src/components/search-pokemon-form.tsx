@@ -10,18 +10,20 @@ function SearchPokemonForm() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("query") || "");
+  const initialQuery = searchParams?.get("query") ?? "";
+  const [searchTerm, setSearchTerm] = useState(initialQuery);
 
   const handleSearch = (term: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", "1");
-    if (term) {
-      params.set("query", term);
-      // params.delete("type");
-    } else {
-      params.delete("query");
+    if (searchParams) {
+      const params = new URLSearchParams(searchParams);
+      params.set("page", "1");
+      if (term) {
+        params.set("query", term);
+      } else {
+        params.delete("query");
+      }
+      replace(`${pathname}?${params.toString()}`);
     }
-    replace(`${pathname}?${params.toString()}`);
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -31,10 +33,12 @@ function SearchPokemonForm() {
 
   const handleClear = () => {
     setSearchTerm("");
-    const params = new URLSearchParams(searchParams);
-    params.delete("query");
-    params.delete("page");
-    replace(`${pathname}?${params.toString()}`);
+    if (searchParams) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("query");
+      params.delete("page");
+      replace(`${pathname}?${params.toString()}`);
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +47,6 @@ function SearchPokemonForm() {
 
   return (
     <form onSubmit={handleSubmit} className="relative">
-      {/* <h2 className="text-brown2 text-base font-medium">Search Pokemon</h2> */}
       <div className="relative">
         <input
           value={searchTerm}
