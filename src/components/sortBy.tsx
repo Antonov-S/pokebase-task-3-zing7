@@ -41,14 +41,16 @@ async function SortBy({ type }: SortByProps) {
   }, [type]);
 
   function handleSortBy(option: SingleValue<OptionType>) {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", "1");
-    if (option && option.value) {
-      params.set("type", option.value);
-    } else {
-      params.delete("type");
+    if (searchParams) {
+      const params = new URLSearchParams(searchParams);
+      params.set("page", "1");
+      if (option && option.value) {
+        params.set("type", option.value);
+      } else {
+        params.delete("type");
+      }
+      replace(`${pathname}?${params.toString()}`);
     }
-    replace(`${pathname}?${params.toString()}`);
   }
 
   return (
