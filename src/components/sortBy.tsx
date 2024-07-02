@@ -17,7 +17,7 @@ type SortByProps = {
   type: string | undefined;
 };
 
-function SortBy({ type }: SortByProps) {
+async function SortBy({ type }: SortByProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();

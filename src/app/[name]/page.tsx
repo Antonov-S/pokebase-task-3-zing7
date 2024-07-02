@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
 
 import { fetchPokemon } from "@/lib/server-utils";
 import BackButton from "@/components/ui/back-button";
@@ -23,7 +22,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     console.log("Error in Pokemon Page:", error);
   }
 
-  if (!pokemon) return notFound();
+  if (!pokemon) return null;
 
   if (!pokemon.sprites?.front_default) {
     pokemon.sprites.front_default = DEFAULT_POKE_IMAGE.src;
