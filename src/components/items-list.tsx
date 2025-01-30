@@ -18,7 +18,7 @@ type ItemsListProps = {
   totalResults: number;
 };
 
-async function ItemsList({
+function ItemsList({
   page,
   query,
   type,
