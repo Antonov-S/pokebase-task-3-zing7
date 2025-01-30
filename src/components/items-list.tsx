@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import SortBy from "./sortBy";
 import EmptyView from "./empty-view";
@@ -18,7 +18,7 @@ type ItemsListProps = {
   totalResults: number;
 };
 
-function ItemsList({
+async function ItemsList({
   page,
   query,
   type,

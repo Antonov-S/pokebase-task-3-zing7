@@ -6,7 +6,7 @@ function Footer() {
     <footer className="container md:w-full flex justify-between items-center text-xs opacity-50 mt-3">
       <small className="text-xs">
         <p>
-          © Copyright by{" "}
+          {currentDate.getFullYear()}©Copyright by{" "}
           <Link
             className=""
             href="https://s-antonov-portfolio-website.vercel.app/"

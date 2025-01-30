@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p id="start" align="center">
+<br>
 
-## Getting Started
+  <h1 align="center" color='7582EB'>Pokebase</h1>
+  
+</p>
 
-First, run the development server:
+## Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. <a href="#overview">Overview</a>
+2. <a href="#appConfig">Application Configurations</a>
+3. <a href="#constants">Application Constants</a>
+4. <a href="#appShots">Screenshots</a>
+
+<h2 id="overview">Overview</h2>
+
+Pokebase is a web application developed as part of the **Zing7 Ltd summer training program**. The project focuses on learning to fetch and process API data by building a Pokémon database using the **PokéAPI**. The main objective is to practice API data handling, with minimal emphasis on design.
+
+### Key Features:
+
+- **Pokémon listing** with pagination (9-50 Pokémon per page)
+- **Filtering by Pokémon type** (Fire, Water, Ground, etc.)
+- **Detailed Pokémon info pages**
+- **Search bar with autocomplete**, working in conjunction with sorting (Pokémon are first filtered by type, then searched by keyword)
+- **Skeleton loader for improved user experience** during data fetching
+- **Not-found component** for handling missing Pokémon entries
+- **No authentication required**, the app is open to all users
+
+### Built With:
+
+- TypeScript
+- Next.js
+- Tailwind CSS
+
+<h2 id="appConfig">Application Configurations</h2>
+
+### **Node Version:**
+
+```javascript
+Node version: v20.10.0
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### **Available Scripts:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```javascript
+# install dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# start
+npm run dev
 
-## Learn More
+# build
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Application Nav
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Application Nav](/appScreens/next-nav.jpg)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<h2 id="constants">Application Constants</h2>
 
-## Deploy on Vercel
+The application does not use environment variables. Instead, key constants required for its functionality are stored in the following file:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+📌 **Path:** `src/lib/constants.ts`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The file contains essential values such as:
+
+```javascript
+import pokeBall from "../../public/pokeBall.png";
+
+export const API_URL = "https://pokeapi.co/api/v2";
+export const LIMIT = 9;
+export const DEFAULT_POKE_IMAGE = pokeBall;
+
+export const SORTING_TYPES = [
+  { id: "0", label: "Sort by default", value: "default" },
+  { value: "fire", id: "10", label: "Sort by fire" },
+  { value: "water", id: "11", label: "Sort by water" },
+  { value: "grass", id: "12", label: "Sort by grass" },
+  { value: "electric", id: "13", label: "Sort by electric" },
+  { value: "ice", id: "15", label: "Sort by ice" }
+];
+```
+
+<h2 id="appShots">Screenshots</h2>
+
+### Home View
+
+![Home View](/appScreens/app-main-view.jpg)
+
+### Filtering and Sorting
+
+![Sorting](/appScreens/sorting.jpg)
+
+### Search Functionality
+
+![Search](/appScreens/search.jpg)
+
+### Pokémon Detailed View
+
+![Pokemon View](/appScreens/pokemon-view.jpg)
+
+### Pokémon Statistics
+
+![Pokemon Statistics](/appScreens/pokemon-statistiks.jpg)
+
+### Empty List (No Results)
+
+![Empty List](/appScreens/empty-list.jpg)
